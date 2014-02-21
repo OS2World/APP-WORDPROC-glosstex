@@ -1,0 +1,105 @@
+$Id: LIESMICH,v 1.8 1997/05/04 12:19:49 yavuzv Exp $
+
+
+* Einleitung
+
+GlossTeX ist ein Tool für die automatische Erstellung eines
+Glossars. Es wird zusammen mit LaTeX und MakeIndex verwendet. Um
+GlossTeX zu compilieren ist ein C Compiler notwendig. Make ist nicht
+unbedingt erforderlich, wird aber empfohlen.
+
+GlossTeX kombiniert die Funktionalität von GloTeX und nomencl. Es
+verwendet dasselbe Format f"ur die Glossar-Datenbank wie
+GloTeX. GlossTeX kann zusammen mit nomencl verwendet werden, dabei
+sollte GlossTeX vornehmlich f"ur Begriffe verwendet werden, die in
+mehr als einem Dokument auftauchen.
+
+
+Die aktuellste Version findet sich immer auf CTAN:/support/glosstex.
+
+F"ur GlossTeX wird KEINERLEI Gew"ahrleistung "ubernommen. Es
+unterliegt der GNU General Public License (siehe Datei COPYING).
+
+		   Copyright (C) 1997 Volkan Yavuz
+
+
+* Verwendung
+
+Folgendes kommt in die LaTeX-Datei:
+
+	\documentclass{article}
+	\usepackage{glosstex}
+	\begin{document}
+	Dieses Dokument wurde mit \LaTeX\glosstex{LaTeX} erstellt.
+	\printglosstex
+	\end{document}
+
+Die .gdf-Datei enth"alt die Definitionen der Begriffe, die im Glossar
+erscheinen.
+
+	@entry{LaTeX, \LaTeX{}} \LaTeX{} ist ein \TeX{}-Format.
+
+Um das Glossar zu erstellen, werden latex, glosstex, makeindex und
+schlie"slich ein weiteres Mal latex aufgerufen.
+
+
+* Installation
+
+Zun"achst mu"s glosstex mit Hilfe der C-Quellen compiliert
+werden. Wenn MAKE vorhanden ist, gen"ugt ein Aufruf von
+"make". Ansonsten m"ussen die folgende Befehle verwendet werden:
+
+	cc -c database.c -o database.o
+	cc -c error.c -o error.o
+	cc -c labels.c -o labels.o
+	cc -c list.c -o list.o
+	cc -c main.c -o main.o
+	cc -c version.c -o version.o
+	cc database.o error.o labels.o list.o main.o version.o -o glosstex
+
+Die Datei "glosstex" -- oder "glosstex.exe", je nach System -- kommt
+in ein Verzeichnis zu den anderen ausf"uhrbaren Dateien.
+
+Schlie"slich wird die Datei "glosstex.sty" in ein Verzeichnis kopiert,
+in dem LaTeX nach .sty Dateien sucht, z.B. texmf/tex/latex/misc.
+
+Unter OS/2 erfolgt die compilierung mit "make OSTYPE=OS2". Weiteres
+findet sich im Abschnitt "Binaries" weiter unten.
+
+Um die Dokumentation zu erstellen, "make doc" eingeben. Ist kein MAKE
+vorhanden, sind die folgenden Befehle auszuf"uhren:
+
+	latex glosstex
+	glosstex glosstex.glo glosstex.gdf -o glosstex.gxs -t glosstex.gxg
+	makeindex glosstex.gxs -o glosstex.glx -t glosstex.glg -s glosstex.ist
+	latex glosstex
+	glosstex glosstex.glo glosstex.gdf -o glosstex.gxs -t glosstex.gxg
+	makeindex glosstex.gxs -o glosstex.glx -t glosstex.glg -s glosstex.ist
+	latex glosstex
+
+Falls etwas schief geht, kann ein Blick in die Protokolldatei von
+GlossTeX (glosstex.gxg) oder MakeIndex (glosstex.glg) hilfreich sein.
+
+Falls alles klappt, befindet sich die komplette Dokumentation in
+"glosstex.dvi". Zus"atzliche Information findet sich in
+"glosstex.tex", das gleichzeitig Beispiel f"ur alle Funktionen von
+GlossTeX dient.
+
+
+* Binaries
+
+Eine kompilierte Version von GlossTeX findet sich in
+CTAN:/support/os2/binaries. 
+
+
+* Kommentare
+
+Bei Anregungen, Kommentaren und sonstigem, bitte Mail an:
+	
+	yavuzv@rumms.uni-mannheim.de 
+
+
+;;; Local Variables:
+;;; mode: indented-text
+;;; mode: outline-minor
+;;; End:

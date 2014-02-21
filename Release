@@ -1,0 +1,4 @@
+# -*- Makefile -*-
+# $Id: Release,v 1.3 1997/05/04 12:19:50 yavuzv Exp $
+
+RELEASE=0.2

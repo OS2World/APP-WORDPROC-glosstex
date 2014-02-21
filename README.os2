@@ -1,0 +1,28 @@
+This is the os/2 executable of glosstex by Volkan Yavuz, built by me.
+glosstex allows a convenient generation of glossaries using LaTeX and a
+glossary data base similar to BibTeX and the literature data base. For
+more information see the original readme file. The archive also contains
+the original sources which compile as is on OS/2.
+
+It was built on IBM OS/2 Warp 4 using emx09c + emxfix02, so you need the
+emx runtime system emxrt.zip which can be found on the os/2 sites given
+below. Newer versions will normally work, older ones not. The programme
+was also tested on IBM OS/2 Warp 3.
+
+The latest execuatable can be found on CTAN in /support/os2/binaries,
+the latest sources on CTAN in /pub/tex/ctan/support/glosstex. CTAN is
+the comprehensice TeX archive network, one good site is ftp.tex.ac.uk,
+and there is boatload of mirrors out there like wcarchive.cdrom.com etc.
+
+The full archive can be found on
+
+ftp-os2.nmsu.edu://pub/os2/unix/apps/tex/utils/glosstex.zip
+ftp-os2.cdrom.com://pub/hobbes/tex/utils/glosstex.zip
+ftp.leo.org://pub/comp/os/os2/leo/emTeX/contrib/glosstex.zip
+
+
+All praises, suggestions, bug reports to Volkan, please, chocolates to
+him and me. As usual, you use this programme at your own risk without
+any implied or explicit warranty. I do the same.
+
+Have fun!  Stefan A. Deutscher (sad@utk.edu / stefand@ibm.net) 10-May-1997

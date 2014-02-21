@@ -1,0 +1,61 @@
+% -*- latex -*-
+% $Id: glosstex.sty,v 1.16 1997/05/04 12:19:51 yavuzv Exp $
+
+\def\fileversion{0.2}
+\def\filedate{1997/05/04}
+
+\NeedsTeXFormat{LaTeX2e}[1996/12/01]
+\ProvidesPackage{glosstex}[\filedate\space\fileversion\space GlossTeX package]
+\RequirePackage{ifthen}
+
+\newif\if@GlossTeX@refpage
+
+\newcommand{\GlossTeX}{Gloss\TeX}
+
+\newcommand{\GlossTeXPage}[1]{\ignorespaces%
+  \ifthenelse{\boolean{@GlossTeX@refpage}}%
+    {% refpage true
+      \ifthenelse{\value{glosstexmode} = 1}{\glosstexpage{#1}}{}% package
+      \ifthenelse{\value{glosstexmode} = 2}{\glosstexpage{#1}}{}% always
+      \ifthenelse{\value{glosstexmode} = 3}{}{}}% never
+    {% refpage false
+      \ifthenelse{\value{glosstexmode} = 1}{}{}% package
+      \ifthenelse{\value{glosstexmode} = 2}{\glosstexpage{#1}}{}% always
+      \ifthenelse{\value{glosstexmode} = 3}{}{}}% never
+    }%
+
+\DeclareOption{refpage}{\@GlossTeX@refpagetrue}
+\DeclareOption{norefpage}{\@GlossTeX@refpagefalse}
+
+\ExecuteOptions{norefpage}
+\ProcessOptions
+
+\newcounter{glosstexmode}
+
+\newcommand{\GlossTeXMode}[1]{\ignorespaces%
+  \ifthenelse{\equal{#1}{p}}{\setcounter{glosstexmode}{1}}{}%
+  \ifthenelse{\equal{#1}{a}}{\setcounter{glosstexmode}{2}}{}%
+  \ifthenelse{\equal{#1}{n}}{\setcounter{glosstexmode}{3}}{}}
+
+\newcommand{\glosstexpage}[1]{\hfill\emph{page~#1}}
+
+\newcommand{\glosstex}[2][p]{\ignorespaces%
+  \protected@write\@glossaryfile{}%
+  {\string\glosstexentry{#2}{#1}{\thepage}}}
+
+\newcommand{\glosstexxref}[1]{\ignorespaces%
+  \protected@write\@glossaryfile{}%
+  {\string\glosstexentry{#1}{n}{\thepage}}}
+
+\DeclareRobustCommand{\glosstexname}{\section*{Glossary}}
+
+\newenvironment{theglosstex}{%
+  \glosstexname%
+  \begin{description}}
+  {\end{description}}
+
+\newcommand{\printglosstex}{%
+  \InputIfFileExists{\jobname.glx}{}{\typeout{No file \jobname.glx}}}
+
+\InputIfFileExists{glosstex.cfg}{%
+  \typeout{Using the configuration file glosstex.cfg}}{}

@@ -1,0 +1,31 @@
+$Id: MANIFEST,v 1.3 1997/05/01 15:16:15 yavuzv Exp $
+
+* misc files
+COPYING		the GNU General Public License
+Changes		list of user-visible changes
+LIESMICH	basic documentation in german
+MANIFEST	this file
+Makefile	file for Make
+README		basic documentation in english
+TODO		planned enhancements
+Version		file containing the version-string
+
+* sources
+database.c
+database.h
+error.c
+error.h
+glosstex.h
+glosstex.ist	GlossTeX style file for MakeIndex
+glosstex.sty	GlossTeX style file for LaTeX
+labels.c
+labels.h
+list.c
+list.h
+main.c
+version.c
+version.h
+
+* documentation
+glosstex.gdf	GlossTeX glossary definition file for the documentation
+glosstex.tex	documentation source for LaTeX

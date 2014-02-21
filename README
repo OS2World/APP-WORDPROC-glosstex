@@ -1,0 +1,100 @@
+$Id: README,v 1.11 1997/05/04 12:19:50 yavuzv Exp $
+
+
+* Introduction
+
+GlossTeX is a tool for the automatic preparation of glossaries for
+use with LaTeX and MakeIndex. In order to build GlossTeX, you need a C
+compiler. Make is recommended but not necessary.
+
+GlossTeX in some kind combines the functionality of GloTeX and
+nomencl. Like GloTeX, it uses the same format glossary definition
+files. GlossTeX can be used together with nomencl. I suggest using
+GlossTeX for terms that are likely to appear in more than one
+document.
+
+The most recent version can be found on CTAN:/support/glosstex.
+
+GlossTeX comes with absolutely no warranty and is covered by the GNU
+General Public License (see the file COPYING).
+
+		   Copyright (C) 1997 Volkan Yavuz
+
+
+* Usage
+
+In your LaTeX-source, type:
+
+	\documentclass{article}
+	\usepackage{glosstex}
+	\begin{document}
+	This document is typeset using \LaTeX\glosstex{LaTeX}.
+	\printglosstex
+	\end{document}
+
+You have a .gdf-file that contains the definitions of the terms you
+want to appear in the glossary. For example:
+
+	@entry{LaTeX, \LaTeX{}} \LaTeX{} is a \TeX{}-format.
+
+You then run latex, glosstex, makeindex and latex again to build the
+glossary.
+
+
+* Building and Installation 
+
+First, you need to build glosstex from its C sources. If you have
+MAKE, typing "make" from the shell should build the binary. If you
+don't have make just issue these commands:
+
+	cc -c database.c -o database.o
+	cc -c error.c -o error.o
+	cc -c labels.c -o labels.o
+	cc -c list.c -o list.o
+	cc -c main.c -o main.o
+	cc -c version.c -o version.o
+	cc database.o error.o labels.o list.o main.o version.o -o glosstex
+
+Then put the binary "glosstex" -- or "glosstex.exe" -- somewhere in
+your path.
+
+After that, put the file "glosstex.sty" somewhere LaTeX looks for
+style files, e.g. texmf/tex/latex/misc.
+
+If you're using OS/2, try "make OSTYPE=OS2". Or have a look in the
+binaries section below.
+
+To build the documentation, just type "make doc", or alternatively:
+
+	latex glosstex
+	glosstex glosstex.glo glosstex.gdf -o glosstex.gxs -t glosstex.gxg
+	makeindex glosstex.gxs -o glosstex.glx -t glosstex.glg -s glosstex.ist
+	latex glosstex
+	glosstex glosstex.glo glosstex.gdf -o glosstex.gxs -t glosstex.gxg
+	makeindex glosstex.gxs -o glosstex.glx -t glosstex.glg -s glosstex.ist
+	latex glosstex
+
+If something goes wrong, watch glosstex.log or glosstex's log-file
+"glosstex.gxg" and MakeIndex' log-file "glosstex.glg".
+
+If everthing works fine, you have the complete documentation in
+glosstex.dvi. Additionally, "glosstex.tex" itself serves as an
+example since it uses all features of GlossTeX.
+
+
+* Binaries
+
+Have a look in CTAN:/support/os2/binaries where you can find a
+complete package of GlossTeX including binaries for OS/2. 
+
+* Comments
+
+If you have any comments, suggestions, mail me at
+	
+	yavuzv@rumms.uni-mannheim.de 
+
+
+;;; Local Variables:
+;;; mode: indented-text
+;;; mode: outline-minor
+;;; End:

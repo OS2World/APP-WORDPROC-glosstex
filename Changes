@@ -1,0 +1,16 @@
+$Id: Changes,v 1.2 1997/05/01 14:38:41 yavuzv Exp $
+
+* 0.1 to 0.2
+
+- GlossTeX now works together with nomencl: glosstex.gst is now named
+  glosstex.ist, \printglosstex includes \glosstexname to produce
+  glossary heading, \printglosstex uses \jobname.glx instead of
+  \jobname.gls
+
+- Documentation updated
+
+
+;;; Local Variables:
+;;; mode: indented-text
+;;; mode: outline-minor
+;;; End:

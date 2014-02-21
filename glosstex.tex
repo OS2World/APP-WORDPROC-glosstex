@@ -1,0 +1,404 @@
+% -*- latex -*-
+% $Id: glosstex.tex,v 1.22 1997/05/04 12:19:52 yavuzv Exp $
+
+\def\fileversion{0.2}
+\def\filedate{1997/05/04}
+\documentclass[draft,a4paper]{ltxdoc}
+
+%\usepackage[latin1]{inputenc}
+%\usepackage[T1]{fontenc}
+%\usepackage[german]{babel}
+\usepackage{shortvrb}\MakeShortVerb{\|}
+\usepackage{glosstex}
+\makeglossary
+
+\setlength{\arrayrulewidth}{0.4pt}
+\setlength{\doublerulesep}{0.3pt}
+
+\newcommand{\unix}{{\scshape Unix}}
+\newcommand{\MakeIndex}{{MakeIndex}}
+\newcommand{\GloTeX}{Glo\TeX}
+\newcommand{\darg}[1]{{\itshape #1\/}}
+\newcommand{\dopt}[1]{$[$#1$]$}
+
+\begin{document}
+\title{\GlossTeX{} \fileversion}
+\author{\scshape Volkan Yavuz\footnote{e-mail: yavuzv@rumms.uni-mannheim.de}}
+\date{\filedate}
+\maketitle
+
+%%
+%% Abstract
+
+\begin{abstract}
+  \GlossTeX{} is a tool for the preparation of glossaries. It greatly
+  simplifies this task. One or more glossary-definition files serve as
+  databases which contain the descriptions of terms. These terms are
+  identified through labels. Based upon these labels set into the
+  \TeX{}-source, \GlossTeX{} determines which entries have to appear in
+  the glossary. \GlossTeX{} uses \MakeIndex{} for the sorting of the
+  glossary. References to the place where a term appears in the text
+  can be set in the glossary.
+\end{abstract}
+
+\tableofcontents
+%\listoffigures
+\listoftables
+
+%%
+%% Introduction
+
+\section{Introduction}
+\subsection{Purpose}
+\GlossTeX{} is a tool for the preparation of glossaries. Based upon the
+labels set into the \TeX{}-source, \GlossTeX{} determines which entries
+from a glossary-definition file have to be processed. \GlossTeX{} then
+creates an intermediate file that has to be processed by \MakeIndex{} for
+sorting. The output of \MakeIndex{}  is then included into the
+\TeX{}-source for typesetting. This whole process can be automated by
+using a makefile.
+
+\subsection{History}
+I created \GlossTeX{} because there were no tools for the preparation
+of glossaries that fit my needs. \GlossTeX{} is mainly a combination of
+the features of {\sffamily nomencl} and \GloTeX{}. The way \GlossTeX{} 
+handles page references is almost identical to the way {\sffamily
+  nomencl} does it. The use of glossary databases is inspired by
+\GloTeX{}. In fact, \GlossTeX{} should be able to read any glossary
+database that \GloTeX\ is able to read, and vice versa. Some code to
+parse the database file is taken directly from the \GloTeX\ sources.
+
+\subsection{Legalese}
+\GlossTeX{} is provided ``as is'' and comes with absolutely no
+warranty. It is covered by the GNU General Public License (see the
+file |COPYING| that comes with this package).
+
+\begin{center}
+  \noindent\copyright\ Volkan Yavuz, 1997
+\end{center}
+
+
+%%
+%% Installation
+
+\section{Installation}
+You need \LaTeX2e{}, \MakeIndex{} and a C compiler to build and install
+\GlossTeX{}. Just type |make| to compile \GlossTeX{}. (If you don't
+have ``make'', just compile each |.c|-file and link all the resulting
+files together.) So, these commands should be sufficient to build
+\GlossTeX{}
+%
+\begin{quote}
+\begin{verbatim}
+cc -c database.c -o database.o
+cc -c error.c -o error.o
+cc -c labels.c -o labels.o
+cc -c list.c -o list.o
+cc -c main.c -o main.o
+cc -c version.c -o version.o
+cc database.o error.o labels.o list.o main.o version.o -o glosstex
+\end{verbatim}
+\end{quote}
+%
+
+Put the final binary (|glosstex| or |glosstex.exe|) somewhere in your
+path and copy |glosstex.sty| to a place \TeX\ looks for \LaTeX{}-files
+(e.\,g.~|texmf/|\-|tex/|\-|latex/|\-|misc|). You also need a
+|.ist|-file\glosstex[a]{ist-file} for \MakeIndex{} (see |glosstex.ist|)
+and a glossary-definition database for \GlossTeX{} (see
+|glosstex.gdf|). Unfortunately, \GlossTeX{} doesn't have any
+path-searching capabilities (yet), so you have to specify the whole
+path for any |.glo| and |.gdf|-files\glosstex[a]{gdf-file}.
+
+%%
+%% Usage
+
+\section{Usage}
+To tell \LaTeX\ that we want to generate a glossary, the command
+%
+\begin{quote}
+  |\makeglossary|
+\end{quote}
+%
+is issued in the preamble of the document. The \LaTeX{}-macros needed
+by \GlossTeX{} have to be included into the source using
+%
+\begin{quote}
+|\usepackage|\dopt{|[|\darg{options}|]|}|{glosstex}|
+\end{quote}
+%
+where \darg{options} may be one of |refpage| or |norefpage|. The
+latter one is the default. These options are described later in
+section~\ref{sec:page_references}.
+
+Whenever you want a term to appear in the glossary, you insert
+%
+\begin{quote}
+  |\glosstex|\dopt{|[|\darg{mode}|]|}|{|\darg{label}|}|
+\end{quote}
+%
+into the text (preferably directly after the term to make sure that
+page references are right). \darg{label} references the entry and the
+optional argument \darg{mode} determines the mode for page references.
+It works in conjunction with the optional arguments |refpage| and
+|norefpage| to the package. \darg{mode} defaults to |p|.
+
+This writes a line of the form
+%
+\begin{quote}
+|\glosstexentry{|\darg{label}|}{|\darg{mode}|}{|\darg{page}|}|  
+\end{quote}
+%
+into the |.glo|-file. \darg{label} and \darg{mode} are the
+values supplied to the |\glosstex| command in the source. This file
+has then to be processed by \GlossTeX{} and \MakeIndex{} subsequently
+to produce a complete glossary-file (suffix |.gls|) which is finally
+included into the document. This may be done using the commands
+%
+\begin{quote}
+\begin{verbatim}
+\printglosstex
+\end{verbatim}
+\end{quote}
+
+\subsection{Glossary-Definition File}
+A glossary-definition file (suffix |.gdf|) is needed which serves
+as a database for \GlossTeX{}, holding the actual descriptions of all
+entries. This file contains entries of the form
+%
+\begin{quote}
+|@entry{|\darg{label }\dopt{|,|\darg{item}}|}| \darg{text}
+\end{quote}
+%
+where \darg{label} and \darg{text} are both mandatory elements. \darg{label}
+is used to identify the entry and \darg{text} may contain any amount
+of \TeX{}-source, being the actual definition of the item. The
+optional argument \darg{item} describes the appearance of the item in
+the glossary. If omitted, it defaults to \darg{label}. It can be used
+when some special form of typesetting is wanted.
+
+This is an example for a valid |.gdf|-file. Note that all lines
+until the first line starting with |@entry{| are ignored. Thus they
+can serve a comments.
+%
+\begin{quote}    
+\begin{verbatim}
+# Heading lines not starting with '@entry{' are ignored
+
+@entry{gdf-file, \texttt{gdf}-file} Database file
+containing glossary-definitions for Gloss\TeX{}.
+\end{verbatim}
+\end{quote}
+%
+\darg{item} may contain any number of ``|{|''; as long as they are
+balanced, \GlossTeX{} will be able to correctly parse the line. 
+
+You may have noted that the format of the |.gdf|-file is identical to
+the format \GloTeX\ is using. \GlossTeX{} should be able to read any
+files that \GloTeX\ reads, and vice versa. In fact, the algorithms
+that parse the various input files are very similar and the one that
+parses \darg{item} is taken directly from the sources to \GloTeX{}.
+
+\subsection{Invocation}
+After the first run of \LaTeX{}, the |.glo|-file contains all
+necessary information for the preparation of the glossary. \GlossTeX\
+is then invoked to read one or more |.gdf|-files and outputs all
+definitions that are referenced in the |.glo|-file. The output of
+\GlossTeX{} is then processed by \MakeIndex{}  for sorting.
+
+\GlossTeX{} is invoked in a \unix{}-like environment using the
+following command
+%
+\begin{quote}
+  |glosstex |\darg{glo-file}| |\darg{gdf-file}| |\dopt{\darg{gdf-file}\dopt{...}} \dopt{|-o |\darg{gxs-file}} \dopt{|-t |\darg{gxg-file}}
+\end{quote}
+
+Any number of |.gdf|-files can be specified. If the output-file
+(|.gxs|\glosstex[a]{gxs-file}) is omitted, it's name is derived from
+the |.glo|-file. The same applies for the log-file (|.gxg|). If the
+specified files contain no extension (i.\,e.~they contain no ``|.|'')
+the standard extensions are added. Thus the command
+%
+\begin{quote}
+  |glosstex thesis thesis.foo master -t glosstex.log|
+\end{quote}
+%
+would open the file |thesis.glo| for input and use the files
+|master.gdf| and |thesis.foo| as glossary-databases. The output would
+be written into |thesis.gxs| and the log-file would be named
+|glosstex.log|.
+
+The |.gxs|-file then looks like
+%
+\begin{quote}
+\begin{verbatim}
+\glosstexentry{gdf-file@[\texttt{gdf}-file] Database file
+containing glossary-definitions for Gloss\TeX{}.
+\GlossTeXMode{p}|GlossTeXPage}{3}
+\end{verbatim}
+\end{quote}
+
+This file is then processed my \MakeIndex{}  yielding the final
+output. \MakeIndex{}  has to be invoked in this way
+%
+\begin{quote}
+  |makeindex | \darg{gxs-file} |-o | \darg{glx-file} |-s | \darg{ist-file} \dopt{|-t |\darg{glg-file}}
+\end{quote}
+
+It is very important to use an appropriate |.ist|-file for \MakeIndex\
+to be able to read and write files in the correct format. \GlossTeX\
+comes with |glosstex.ist| which can be used as style-file for \MakeIndex{}.
+
+The command
+%
+\begin{quote}
+|makeindex thesis.gxs -o thesis.glx -s glosstex.ist|
+\end{quote}
+%
+produces the final |.gls|-file which is then include by
+|\printglosstex| during the next \LaTeX{}-run.
+
+\subsection{Page References}
+\label{sec:page_references}
+You may want a reference in the glossary to the place where the term
+first appears in the text. This can be done using the optional
+argument to |\glosstex|. That argument in combination with the option
+to |\usepackage| controls these references. Table~\ref{tab:references} gives
+an overview of all possible combinations of these two arguments. A
+``$\times$'' indicates that a reference is produced.
+
+\begin{table}[htbp]
+  \begin{center}
+    \leavevmode
+    \begin{tabular}{rcc}
+      \hline\hline
+      & |refpage| & |norefpage|\\
+      \hline
+      never |[n]| &$-$ & $-$ \\
+      package |[p]| & $\times$ & $-$\\
+      always |[a]| & $\times$ & $\times$\\
+      \hline\hline
+    \end{tabular}
+    \caption{Options controlling the appearance of page references.}
+    \label{tab:references}
+  \end{center}
+\end{table}
+
+One possible usage of this feature: while debugging a document, turn on
+page references by using the option |refpage| to the page. Every
+glossary entry included with the modes |[a]| (always) or the default |[p]|
+(package) will contain a reference. After debugging, remove the option
+|refpage| and only those entries that were included with mode |[a]| will
+still have a reference.
+
+\subsection{Cross-References}
+It may be useful to use cross-references in glossary entries. Assume
+you have referenced |\glosstex{ascii}| which describes the term
+ASCII\glosstex{ascii}. You may also want to include EBCDIC as an
+example for another character encoding. To achieve this, write this
+into the definition of ASCII
+%
+\begin{verbatim}
+See also EBCDIC\glosstexxref{ebcdic}. 
+\end{verbatim}
+%
+and \GlossTeX{} then produces ``See also EBCDIC'' and also includes
+the definition for EBCDIC into the glossary.
+
+\subsection{\GlossTeX{} and \textsf{nomencl}}
+It is possible to use {\sffamily nomencl} and \GlossTeX{} in one
+document without problems. Although both use the |.glo|-file,
+\GlossTeX{} will ignore all lines from |.glo| not starting with
+``|\glosstexentry{|''. Using \MakeIndex{} with the proper |nomencl.ist|
+file in turn ignores all |\glosstexentr|ie|{|s. 
+
+The following commands show how to deal with documents using both
+\GlossTeX{} and \textsf{nomencl}.
+\begin{verbatim}
+latex thesis
+glosstex thesis.glo thesis.gdf -o thesis.gxs -t thesis.gxg
+makeindex thesis.gxs -o thesis.glx -t thesis.glg -s glosstex.ist
+makeindex thesis.glo -o thesis.gls -t thesis.nlg -s nomencl.ist
+latex thesis
+\end{verbatim}
+
+\LaTeX\ produces the |.glo|-file which serves as input to both
+\GlossTeX{} and \textsf{nomencl}. \GlossTeX{} produces the |.gxs|-file
+which is processed by \MakeIndex{} using |glosstex.ist|, yielding the
+|.glx|-file. This file is included with |\printglosstex|. To produce
+the nomenclature, the same |.glo|-file is processed by \MakeIndex{},
+this time using |nomencl.ist|. This yields the |.glo|-file which is
+included using |\printglossary|. Confused? Read it again. Easy, isn't
+it?
+    
+%%
+%% Customizing
+
+\section{Customising}
+\GlossTeX{} can be customised using a file named |glosstex.cfg|
+
+If you're writing a german document, you may want to change the text
+that \GlossTeX{} is using for page reference. Instead of ``(See page
+1.)'' you want ``(Siehe Seite 1.)''. Additionally, you want to use
+"`Glossar"' instead of "`Glossary"'. Put the following lines into the
+file |glosstex.cfg|
+%
+\begin{verbatim}
+  \renewcommand{\glosstexpage}[1]{(Siehe Seite #1.)}
+  \renewcommand{\glosstexname}{\section*{Glossar}}
+\end{verbatim}
+
+%%
+%% Some Details
+
+\section{Some Details}
+While reading the |.glo|-file, \GlossTeX{} only considers the first
+appearance of one label. All subsequent entries are silently ignored.
+(Almost silently, because the |.gxg|-file will contain detailed
+information about this, and more.)
+
+The same applies while reading one or more |.gdf|-files. The first
+entry wins, all other entries are ignored. This fact can be utilised
+in some way. Assume you have a |master.gdf| which contains general
+terms and a file |thesis.gdf| which only contains terms that are
+intended for use in your thesis. Whenever an entry is present in both
+|.gdf|-files, the one from |thesis.gdf| should be taken. To achieve
+this, specify |thesis.gdf| \emph{before} |master.gdf|.
+
+The |.gxg|-file contains additional information, e.\,g.~when no entry
+was found for a label.
+
+After \GlossTeX{} is finished, it will print some statistics about read
+labels, unresolved entries and the like. More detailed information can
+then be found in the |.gxg|-file.
+
+%%
+%% Bugs and Features
+
+\section{Bugs, Features and Things To-Do}
+I chose to use |\glosstex| instead of |\glossary| to avoid conflicts
+with other packages that may use a glossary-file. The document classes
+``ltxdoc'' and ``doc'' use the glossary for typesetting the change
+history. 
+
+\GlossTeX{} should be able to use an environment string which specifies
+the directory to search for |.gdf|-files. This will probably be added
+sometime, maybe even using kpathsea.
+
+\GlossTeX{} should compile in any ANSI C environment. I have built
+\GlossTeX{} on Linux 2.0.0 with gcc 2.7.2, make 3.7.4 and libc
+5.2.17. It also compiled out-of-the box on DOS using DJGPP
+2.6.3. There is a OS/2 port done by Stefan A. Deutscher
+(\texttt{sad@utk.edu}) on CTAN in |support/|\-|os2/|\-|binaries|. If
+you have successfully built \GlossTeX{} on some other platform (like VMS
+or Macintosh) please contact me, so I can enhance \GlossTeX{}.
+
+\printglosstex
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% mode: outline-minor
+%%% TeX-master: t
+%%% End: 

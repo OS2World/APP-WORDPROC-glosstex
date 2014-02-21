@@ -1,0 +1,21 @@
+% -*- latex -*-
+% Heading lines that do not begin with '@entry{' are ignored
+% $Id: glosstex.gdf,v 1.12 1997/04/27 19:43:55 yavuzv Exp $
+
+@entry{ist-file, \texttt{ist}-file} Style-file for MakeIndex,
+describing the input and output files.
+
+@entry{gdf-file, \texttt{gdf}-file} Database file containing
+glossary-definitions for Gloss\TeX{}. Entries have the
+form \texttt{\char64entry\{<label>, <item>\} <text>}.
+
+@entry{gxs-file, \texttt{gxs}-file} Intermediate file produced by
+Gloss\TeX{}. To be processed by MakeIndex. Entries have the form
+\texttt{\char64entry\{<label>, <item>\} <text>}.
+
+@entry{ascii, ASCII} American Standard Code for Information
+Interchange. See also EBCDIC\glosstexxref{ebcdic}.
+
+@entry{ebcdic, EBCDIC} Extended Binary Coded Decimals Interchange
+Code.
+

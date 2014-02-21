@@ -1,0 +1,21 @@
+% -*- latex -*-
+% $Id: glosstex.ist,v 1.3 1997/04/25 19:24:33 yavuzv Exp $
+
+%   INPUT STYLE SPECIFIERS
+keyword "\\glosstexentry"
+quote  '~'                     
+
+%   OUTPUT STYLE SPECIFIERS
+delim_0 ""
+
+indent_space ""
+indent_length 0
+
+preamble "\\begin{theglosstex}"
+postamble "\n\n\\end{theglosstex}"
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
